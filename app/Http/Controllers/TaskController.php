@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
+    /**
+     * Display a listing of the tasks.
+     */
     public function index()
     {
         $tasks = Task::latest()->get();
@@ -14,16 +17,23 @@ class TaskController extends Controller
         return view('tasks.index', compact('tasks'));
     }
 
+    /**
+     * Show the form for creating a new task.
+     */
     public function create()
     {
         return view('tasks.create');
     }
 
+    /**
+     * Store a newly created task.
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'completed' => 'boolean',
         ]);
 
         Task::create($validated);
@@ -33,16 +43,25 @@ class TaskController extends Controller
             ->with('success', 'Task created successfully.');
     }
 
+    /**
+     * Display the specified task.
+     */
     public function show(Task $task)
     {
         return view('tasks.show', compact('task'));
     }
 
+    /**
+     * Show the form for editing the specified task.
+     */
     public function edit(Task $task)
     {
         return view('tasks.edit', compact('task'));
     }
 
+    /**
+     * Update the specified task.
+     */
     public function update(Request $request, Task $task)
     {
         $validated = $request->validate([
@@ -58,6 +77,9 @@ class TaskController extends Controller
             ->with('success', 'Task updated successfully.');
     }
 
+    /**
+     * Remove the specified task.
+     */
     public function destroy(Task $task)
     {
         $task->delete();
