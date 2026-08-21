@@ -1,0 +1,216 @@
+openapi: 3.0.3
+
+info:
+  title: Laravel Task Manager API
+  description: REST API for managing tasks
+  version: 1.0.0
+
+servers:
+  - url: https://laravel-task-manager-poc-production-dqji0b.laravel.cloud
+    description: Production Laravel Cloud Server
+
+paths:
+
+  /api/tasks:
+    get:
+      summary: Get all tasks
+      description: Returns a list of all tasks.
+      tags:
+        - Tasks
+      responses:
+        '200':
+          description: Tasks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListResponse'
+
+    post:
+      summary: Create a task
+      description: Creates a new task.
+      tags:
+        - Tasks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRequest'
+            example:
+              title: "Swagger Test Task"
+              description: "Created from Swagger"
+              completed: false
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+
+  /api/tasks/{task}:
+    get:
+      summary: Get a single task
+      description: Returns a specific task by ID.
+      tags:
+        - Tasks
+      parameters:
+        - name: task
+          in: path
+          required: true
+          description: Task ID
+          schema:
+            type: integer
+          example: 13
+      responses:
+        '200':
+          description: Task retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '404':
+          description: Task not found
+
+    put:
+      summary: Update a task
+      description: Updates an existing task.
+      tags:
+        - Tasks
+      parameters:
+        - name: task
+          in: path
+          required: true
+          description: Task ID
+          schema:
+            type: integer
+          example: 13
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRequest'
+            example:
+              title: "Updated Task"
+              description: "Updated from Swagger"
+              completed: true
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '404':
+          description: Task not found
+
+    patch:
+      summary: Partially update a task
+      description: Partially updates an existing task.
+      tags:
+        - Tasks
+      parameters:
+        - name: task
+          in: path
+          required: true
+          description: Task ID
+          schema:
+            type: integer
+          example: 13
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRequest'
+            example:
+              title: "Partially Updated Task"
+      responses:
+        '200':
+          description: Task updated successfully
+
+    delete:
+      summary: Delete a task
+      description: Deletes a task by ID.
+      tags:
+        - Tasks
+      parameters:
+        - name: task
+          in: path
+          required: true
+          description: Task ID
+          schema:
+            type: integer
+          example: 13
+      responses:
+        '200':
+          description: Task deleted successfully
+        '404':
+          description: Task not found
+
+components:
+
+  schemas:
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 13
+        title:
+          type: string
+          example: "hi"
+        description:
+          type: string
+          example: "hello"
+        completed:
+          type: boolean
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-08-21T05:23:36.000000Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2026-08-21T05:23:36.000000Z"
+
+    TaskRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          example: "New Task"
+        description:
+          type: string
+          example: "Task description"
+        completed:
+          type: boolean
+          example: false
+
+    TaskResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Task retrieved successfully."
+        data:
+          $ref: '#/components/schemas/Task'
+
+    TaskListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
